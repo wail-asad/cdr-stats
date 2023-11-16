@@ -13,7 +13,7 @@
 #
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.context import RequestContext
 from django.conf import settings
 from django_lets_go.common_functions import getvar, ceil_strdate
@@ -110,7 +110,7 @@ def cdr_concurrent_calls(request):
                 'jquery_on_ready': True,
             },
         }
-    return render_to_response('cdr/graph_concurrent_calls.html', data, context_instance=RequestContext(request))
+    return render('cdr/graph_concurrent_calls.html', data, context_instance=RequestContext(request))
 
 
 @permission_required('user_profile.real_time_calls', login_url='/')
@@ -166,4 +166,4 @@ def cdr_realtime(request):
         'colorgraph3': '0, 0, 180',
         'realtime_graph_maxcall': settings.REALTIME_Y_AXIS_LIMIT,
     }
-    return render_to_response('cdr/graph_realtime.html', variables, context_instance=RequestContext(request))
+    return render('cdr/graph_realtime.html', variables, context_instance=RequestContext(request))

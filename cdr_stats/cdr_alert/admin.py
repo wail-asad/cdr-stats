@@ -14,15 +14,15 @@
 
 from django.contrib import admin
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
-from django.conf.urls import patterns
+from django.utils.translation import gettext_lazy as _
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response
+from django.urls import reverse
+from django.shortcuts import render
 from country_dialcode.models import Country, Prefix
 from cdr_alert.models import AlertRemovePrefix, Alarm, AlarmReport, Blacklist, Whitelist
 from cdr_alert.forms import BWCountryForm
+from django.urls import path
 
 
 # AlertRemovePrefix
@@ -52,10 +52,10 @@ class BlacklistAdmin(admin.ModelAdmin):
         return False
 
     def get_urls(self):
-        urls = super(BlacklistAdmin, self).get_urls()
-        my_urls = patterns('',
-                           (r'^blacklist_by_country/$', self.admin_site.admin_view(self.blacklist_by_country)),
-                           )
+        urls = super().get_urls()
+        my_urls = [
+            path('blacklist_by_country/', self.admin_site.admin_view(self.blacklist_by_country)),
+        ]
         return my_urls + urls
 
     def blacklist_by_country(self, request):
@@ -108,7 +108,7 @@ class BlacklistAdmin(admin.ModelAdmin):
             'model_name': opts.object_name.lower(),
             'prefix_list': prefix_list,
         })
-        return render_to_response('admin/cdr_alert/blacklist/blacklist_by_country.html', context_instance=ctx)
+        return render('admin/cdr_alert/blacklist/blacklist_by_country.html', context_instance=ctx)
 
 
 # Whitelist
@@ -124,9 +124,9 @@ class WhitelistAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super(WhitelistAdmin, self).get_urls()
-        my_urls = patterns('',
-                           (r'^whitelist_by_country/$', self.admin_site.admin_view(self.whitelist_by_country)),
-                           )
+        my_urls = [
+            path('whitelist_by_country/', self.admin_site.admin_view(self.whitelist_by_country)),
+        ]
         return my_urls + urls
 
     def whitelist_by_country(self, request):
@@ -179,7 +179,7 @@ class WhitelistAdmin(admin.ModelAdmin):
             'model_name': opts.object_name.lower(),
             'prefix_list': prefix_list,
         })
-        return render_to_response('admin/cdr_alert/whitelist/whitelist_by_country.html', context_instance=ctx)
+        return render('admin/cdr_alert/whitelist/whitelist_by_country.html', context_instance=ctx)
 
 
 admin.site.register(AlertRemovePrefix, AlertRemovePrefixAdmin)

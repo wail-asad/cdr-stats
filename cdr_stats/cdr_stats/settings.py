@@ -13,12 +13,15 @@
 #
 
 import os
-import djcelery
-djcelery.setup_loader()
 
+from celery import Celery
 
-DEBUG = False
-TEMPLATE_DEBUG = False
+app = Celery('cdr_stats')
+app.config_from_object('django.conf:settings', namespace='CELERY')
+app.autodiscover_tasks()
+
+DEBUG = True
+TEMPLATE_DEBUG = True
 
 ADMINS = (
     ('Your Name', 'your_email@domain.com'),
@@ -34,23 +37,23 @@ DATABASES = {
         # 'postgresql_psycopg2','postgresql','sqlite3','oracle', 'django.db.backends.mysql'
         'ENGINE': 'django.db.backends.sqlite3',
         # Database name or path to database file if using sqlite3.
-        'NAME': APPLICATION_DIR + '/database/cdr_stats.db',
+        'NAME': APPLICATION_DIR + '/cdr_stats.db',
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Not used with sqlite3.
         'PORT': '',                      # Not used with sqlite3.
     },
-    'import_cdr': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cdr-pusher',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '5433',
-        'OPTIONS': {
-            'autocommit': True,
-        }
-    }
+    # 'import_cdr': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'cdr-pusher',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'password',
+    #     'HOST': 'localhost',
+    #     'PORT': '5433',
+    #     'OPTIONS': {
+    #         'autocommit': True,
+    #     }
+    # }
 }
 
 DATABASE_ROUTERS = ['import_cdr.router.CDRImportRouter']
@@ -64,7 +67,7 @@ DATABASE_ROUTERS = ['import_cdr.router.CDRImportRouter']
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
         'LOCATION': 'localhost:11211',
     },
 }
@@ -104,7 +107,7 @@ USE_L10N = True
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = APPLICATION_DIR + "/static/"
+STATIC_ROOT = APPLICATION_DIR + "/static1/"
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -121,7 +124,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    # os.path.join(APPLICATION_DIR, "resources"),
+    os.path.join(APPLICATION_DIR, "resources"),
     ("cdr-stats", os.path.join(APPLICATION_DIR, "resources")),
 )
 
@@ -130,55 +133,56 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'dajaxice.finders.DajaxiceFinder',
+    # 'dajaxice.finders.DajaxiceFinder',
     'djangobower.finders.BowerFinder',
 )
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ')ey%^d=pk^jxgam92tdqb0z+0bbhk=7dub_0$ttw#u8yj)rgo$'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    'django.template.loaders.eggs.Loader',
-    'admin_tools.template_loaders.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(APPLICATION_DIR, 'templates')],  # Update the directory as needed
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.csrf",
+                "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.request",
+                # Add your custom context processors here
+                "context_processors.cdr_stats_common_template_variable",
+            ],
+        },
+    },
+]
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Uncomment the following line if you need it
     # 'geordi.VisorMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'linaro_django_pagination.middleware.PaginationMiddleware',
-    'django_lets_go.filter_persist_middleware.FilterPersistMiddleware',
-)
+    # 'linaro_django_pagination.middleware.PaginationMiddleware',
+    # 'django_lets_go.filter_persist_middleware.FilterPersistMiddleware',
+]
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.csrf",
-    "django.contrib.messages.context_processors.messages",
-    "django.core.context_processors.request",
-    "context_processors.cdr_stats_common_template_variable"
-)
+
 
 ROOT_URLCONF = 'cdr_stats.urls'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates"
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(APPLICATION_DIR, 'templates'),
-)
+
 
 INTERNAL_IPS = ('127.0.0.1')
+
 
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
@@ -188,7 +192,7 @@ DAJAXICE_MEDIA_PREFIX = "dajaxice"
 # DAJAXICE_MEDIA_PREFIX = "dajax"  # http://domain.com/dajax/
 # DAJAXICE_CACHE_CONTROL = 10 * 24 * 60 * 60
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','*']
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -196,9 +200,9 @@ INSTALLED_APPS = (
     # admin tool apps
     # 'admintools_bootstrap',  # https://bitbucket.org/salvator/django-admintools-bootstrap
     'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.menu',
-    'admin_tools.dashboard',
+    'theming',
+    'menu',
+    'dashboard',
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
@@ -227,8 +231,7 @@ INSTALLED_APPS = (
     'dateutil',
     # 'south',
     'linaro_django_pagination',
-    'djcelery',
-    'django_nvd3',
+    # 'django_nvd3',
     'dajaxice',
     'dajax',
     'rest_framework',
@@ -236,6 +239,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'djangobower',
     'activelink',
+    'crispy_bootstrap3',
     'bootstrap3_datetime',
     'crispy_forms',
     'call_analytic',
@@ -260,8 +264,8 @@ except ImportError:
 else:
     INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', )
     # INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', 'template_timings_panel',)
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + \
-        ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    MIDDLEWARE = MIDDLEWARE + \
+        ['debug_toolbar.middleware.DebugToolbarMiddleware',]
     DEBUG_TOOLBAR_PANELS = [
         'debug_toolbar.panels.versions.VersionsPanel',
         'debug_toolbar.panels.timer.TimerPanel',
@@ -498,8 +502,8 @@ BOWER_INSTALLED_APPS = (
     'bootstrap#3.0.3',
     'bootstrap-switch#2.0.0',
     'bootbox#4.1.0',
-    'd3#~3.3.13',
-    'nvd3#1.7.1',
+    # 'd3#~3.3.13',
+    # 'nvd3#1.7.1',
     'components-font-awesome#4.0.3',
     'typeahead.js#0.10.2',
     'bower-jvectormap',
@@ -549,3 +553,13 @@ try:
     from settings_local import *
 except:
     pass
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost',
+    'https://scaling-xylophone-v5xjpx4qwrhxr5q-8000.app.github.dev',
+    'https://scaling-xylophone-v5xjpx4qwrhxr5q-9830.app.github.dev',
+    'http://localhost:8000',  # If you're running the server on a specific port
+    # ... other origins ...
+]

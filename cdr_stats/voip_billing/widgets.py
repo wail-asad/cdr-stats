@@ -18,11 +18,10 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.contrib.admin.widgets import RelatedFieldWidgetWrapper
-from django.utils.translation import ugettext as _
-from django.utils.encoding import force_unicode
+from django.utils.translation import gettext as _
+from django.utils.encoding import force_str
 from django.utils.html import escape
-from django.utils.datastructures import MultiValueDict, MergeDict
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse,NoReverseMatch
 
 
 class ForeignKeySearchInput(forms.HiddenInput):
@@ -135,13 +134,13 @@ class ManyToManySearchInput(forms.MultipleHiddenInput):
         self.help_text = u"To search, enter at least two characters"
 
     def value_from_datadict(self, data, files, name):
-        if isinstance(data, (MultiValueDict, MergeDict)):
+        if isinstance(data, dict):
             res = data.getlist(name)
         else:
             res = data.get(name, None)
 
         for id in res:
-            print self.rel.to.objects.get(pk=id)
+            print(self.rel.to.objects.get(pk=id))
         return res
 
     def render(self, name, value, attrs=None):
@@ -352,7 +351,7 @@ class AutocompleteModelAdmin(admin.ModelAdmin):
         pk_value = obj._get_pk_val()
 
         msg = _('The %(name)s "%(obj)s" was added successfully.') % \
-            {'name': force_unicode(opts.verbose_name), 'obj': force_unicode(obj)}
+            {'name': force_str(opts.verbose_name), 'obj': force_str(obj)}
         # Here, we distinguish between different save types by checking for
         # the presence of keys in request.POST.
         if "_continue" in request.POST:
@@ -370,7 +369,7 @@ class AutocompleteModelAdmin(admin.ModelAdmin):
 
         elif "_addanother" in request.POST:
             self.message_user(request, msg + ' ' + (_("You may add another %s below.") %
-                                                    force_unicode(opts.verbose_name)))
+                                                    force_str(opts.verbose_name)))
             return HttpResponseRedirect(request.path)
         else:
             self.message_user(request, msg)

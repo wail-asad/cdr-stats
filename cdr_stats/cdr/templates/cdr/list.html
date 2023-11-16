@@ -66,43 +66,43 @@
                     <thead>
                     <tr>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'starting_date' %}
+                            {% if col_name_with_order.sort_field == 'starting_date' %}
                               {% sort_link up_icon|safe "starting_date"  %}
                                 {{ CDR_COLUMN_NAME.call_date|capfirst }}
                               {% sort_link down_icon|safe "-starting_date"  %}
                             {% else %}
                               {% sort_link CDR_COLUMN_NAME.call_date|capfirst "-starting_date"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'caller_id_number' %}
+                            {% ifcol_name_with_order.sort_field 'caller_id_number' %}
                               {% sort_link up_icon|safe "caller_id_number"  %}
                                 {{ CDR_COLUMN_NAME.clid|capfirst }}
                               {% sort_link down_icon|safe "-caller_id_number"  %}
                             {% else %}
                               {% sort_link CDR_COLUMN_NAME.clid|capfirst "-caller_id_number"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'destination_number' %}
+                            {% ifcol_name_with_order.sort_field 'destination_number' %}
                               {% sort_link up_icon|safe "destination_number"  %}
                                 {{ CDR_COLUMN_NAME.destination|capfirst }}
                               {% sort_link down_icon|safe "-destination_number"  %}
                             {% else %}
                               {% sort_link CDR_COLUMN_NAME.destination|capfirst "-destination_number"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'duration' %}
+                            {% ifcol_name_with_order.sort_field 'duration' %}
                               {% sort_link up_icon|safe "duration"  %}
                                 {{ CDR_COLUMN_NAME.duration|capfirst }}
                               {% sort_link down_icon|safe "-duration"  %}
                             {% else %}
                               {% sort_link CDR_COLUMN_NAME.duration|capfirst "-duration"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'billsec' %}
+                            {% ifcol_name_with_order.sort_field 'billsec' %}
                               {% sort_link up_icon|safe "billsec"  %}
                               <abbr title='{% trans "billable seconds"|title %}'>{{ CDR_COLUMN_NAME.bill|capfirst }}</abbr>
                               {% sort_link down_icon|safe "-billsec"  %}
@@ -110,63 +110,63 @@
                                 <abbr title="{% trans 'billable seconds'|title %}">
                                 {% sort_link CDR_COLUMN_NAME.bill|capfirst "-billsec"  %}
                                 </abbr>
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'hangup_cause_id' %}
+                            {% ifcol_name_with_order.sort_field 'hangup_cause_id' %}
                               {% sort_link up_icon|safe "hangup_cause_id"  %}
                                 {{ CDR_COLUMN_NAME.hangup_cause|capfirst }}
                               {% sort_link down_icon|safe "-hangup_cause_id"  %}
                             {% else %}
                               {% sort_link CDR_COLUMN_NAME.hangup_cause|capfirst "-hangup_cause_id"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         {% if user.is_superuser %}
                             <th>
-                                {% ifequal col_name_with_order.sort_field 'accountcode' %}
+                                {% ifcol_name_with_order.sort_field 'accountcode' %}
                                   {% sort_link up_icon|safe "accountcode"  %}
                                     {{ CDR_COLUMN_NAME.account|capfirst }}
                                   {% sort_link down_icon|safe "-accountcode"  %}
                                 {% else %}
                                   {% sort_link CDR_COLUMN_NAME.account|capfirst "-accountcode"  %}
-                                {% endifequal %}
+                                {% endif %}
                             </th>
                             <th>
-                                {% ifequal col_name_with_order.sort_field 'buy_rate' %}
+                                {% ifcol_name_with_order.sort_field 'buy_rate' %}
                                     {% sort_link up_icon|safe "buy_rate"  %}
                                     {{ CDR_COLUMN_NAME.buy_rate|capfirst }}
                                     {% sort_link down_icon|safe "-buy_rate"  %}
                                 {% else %}
                                     {% sort_link CDR_COLUMN_NAME.buy_rate|capfirst "-buy_rate"  %}
-                                {% endifequal %}
+                                {% endif %}
                             </th>
                             <th>
-                                {% ifequal col_name_with_order.sort_field 'buy_cost' %}
+                                {% ifcol_name_with_order.sort_field 'buy_cost' %}
                                     {% sort_link up_icon|safe "buy_cost"  %}
                                     {{ CDR_COLUMN_NAME.buy_cost|capfirst }}
                                     {% sort_link down_icon|safe "-buy_cost"  %}
                                 {% else %}
                                     {% sort_link CDR_COLUMN_NAME.buy_cost|capfirst "-buy_cost"  %}
-                                {% endifequal %}
+                                {% endif %}
                             </th>
                         {% endif %}
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'sell_rate' %}
+                            {% ifcol_name_with_order.sort_field 'sell_rate' %}
                                 {% sort_link up_icon|safe "sell_rate"  %}
                                 {{ CDR_COLUMN_NAME.sell_rate|capfirst }}
                                 {% sort_link down_icon|safe "-sell_rate"  %}
                             {% else %}
                                 {% sort_link CDR_COLUMN_NAME.sell_rate|capfirst "-sell_rate"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th>
-                            {% ifequal col_name_with_order.sort_field 'sell_cost' %}
+                            {% ifcol_name_with_order.sort_field 'sell_cost' %}
                                 {% sort_link up_icon|safe "sell_cost"  %}
                                 {{ CDR_COLUMN_NAME.sell_cost|capfirst }}
                                 {% sort_link down_icon|safe "-sell_cost"  %}
                             {% else %}
                                 {% sort_link CDR_COLUMN_NAME.sell_cost|capfirst "-sell_cost"  %}
-                            {% endifequal %}
+                            {% endif %}
                         </th>
                         <th></th>
                     </tr>

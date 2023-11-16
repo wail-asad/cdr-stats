@@ -15,7 +15,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from postgres.fields import json_field
+from django.db.models import JSONField
 
 
 class CDRImport(models.Model):
@@ -55,7 +55,7 @@ class CDRImport(models.Model):
     imported = models.BooleanField(default=False)
 
     # Postgresql >= 9.4 Json field
-    extradata = json_field.JSONField(blank=True)
+    extradata = JSONField(blank=True)
 
     def __unicode__(self):
         return '[%s] %s - dur:%d - hangup:%s' % \

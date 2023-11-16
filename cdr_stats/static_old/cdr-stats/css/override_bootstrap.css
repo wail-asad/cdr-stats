@@ -1,0 +1,116 @@
+
+footer {
+    padding: 40px 20px 10px;
+    text-align: center; /* center align it with the container */
+    clear: both;
+}
+
+.brand img {
+    height: 35px;
+    width: 35px;
+    padding-bottom: 2px;
+}
+
+
+/* * * Responsive * * */
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+    #finance {
+        position: relative; margin: 40px 0px; width: 720px; border: 1px solid #99CCFF;
+    }
+    #graph_responsive, #placeholder_cdr_analytic {
+        width: 700px; height:300px;
+    }
+    #call-world-map {
+        width: 1000px; height:500px;
+        margin:auto;
+    }
+    #overview_analytic {
+        width: 500px;
+    }
+    #graph_responsive div.legend table, #placeholder_cdr_analytic div.legend table {
+      margin-right: -55px;
+    }
+}
+
+/* Landscape phones and down */
+@media (max-width: 479px) {
+    #finance {
+        position: relative; margin: 40px 0px; width: 440px; border: 1px solid #99CCFF;
+    }
+    #graph_responsive, #placeholder_cdr_analytic {
+        width: 350px; height:300px;
+    }
+    #call-world-map {
+        width: 1000px; height:500px;
+        margin:auto;
+    }
+    #overview_analytic {
+        width:300px;
+    }
+    #placeholder_cdr_analytic div.legend table {
+      margin-right: 0px;
+    }
+}
+
+/* Landscape phone to portrait tablet */
+@media (min-width: 480px) and (max-width: 767px) {
+    #finance {
+        position: relative; margin: 40px 0px; width: 580px; border: 1px solid #99CCFF;
+    }
+    #graph_responsive, #placeholder_cdr_analytic {
+        width: 450px; height:300px;
+    }
+    #call-world-map {
+        width: 1000px; height:500px;
+        margin:auto;
+    }
+    #overview_analytic {
+        width:350px;
+    }
+    #graph_responsive div.legend table, #placeholder_cdr_analytic div.legend table {
+      margin-right: -55px;
+    }
+}
+
+/* Large desktop */
+@media (min-width: 980px) and (max-width: 1399px) {
+    #finance {
+        position: relative; margin: 40px 0px; width: 1010px; border: 1px solid #99CCFF;
+    }
+    #graph_responsive, #placeholder_cdr_analytic {
+        width: 800px; height:300px;
+    }
+    #call-world-map {
+        width: 1000px; height:500px;
+        margin:auto;
+    }
+    #overview_analytic {
+        width:500px;
+    }
+    #graph_responsive div.legend table, #placeholder_cdr_analytic div.legend table {
+      margin-right: -60px;
+    }
+}
+
+/* Very Large desktop */
+@media (min-width: 1400px) {
+    #finance {
+        position: relative; margin: 40px 0px; width: 1170px; border: 1px solid #99CCFF;
+    }
+    #graph_responsive, #placeholder_cdr_analytic {
+        width: 1050px; height:300px;
+        margin:auto;
+    }
+    #call-world-map {
+        width: 500px; height:500px;
+        margin:auto;
+    }
+    #overview_analytic {
+        width:500px;
+    }
+    #graph_responsive div.legend table, #placeholder_cdr_analytic div.legend table {
+      margin-right: -80px;
+    }
+}

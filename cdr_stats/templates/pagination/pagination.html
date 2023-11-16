@@ -19,11 +19,11 @@
         {% if display_page_links %}
           {% for page in pages %}
             {% if page %}
-              {% ifequal page page_obj.number %}
+              {% if page == page_obj.number %}
                 <li class="active"><a href="#">{{ page }}</a></li>
               {% else %}
                 <li><a href="?page{{ page_suffix }}={{ page }}{{ getvars }}">{{ page }}</a></li>
-              {% endifequal %}
+              {% endif %}
             {% else %}
                 <li class="disabled">
                     <a href="#">...</a>

@@ -16,7 +16,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from user_profile.models import UserProfile
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Fieldset
@@ -41,7 +41,7 @@ class UserChangeDetailForm(ModelForm):
 
     class Meta:
         model = User
-        #fields = ["last_name", "first_name", "email"]
+        fields = ["last_name", "first_name", "email"]
 
     def __init__(self, user, *args, **kwargs):
         super(UserChangeDetailForm, self).__init__(*args, **kwargs)
@@ -103,3 +103,4 @@ class UserProfileForm(ModelForm):
 
     class Meta:
         model = UserProfile
+        fields = '__all__'

@@ -12,18 +12,19 @@
 # Arezqui Belaid <info@star2billing.com>
 #
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_lets_go.utils import Choice
+from django.db import models
 
 
-class STRING_SEARCH_TYPE_LIST(Choice):
+class STRING_SEARCH_TYPE_LIST(models.IntegerChoices):
     EQUALS = 1, _('Equals')
     BEGINS_WITH = 2, _('Begins')
     CONTAINS = 3, _('Contains')
     ENDS_WITH = 4, _('Ends')
 
 
-class CDR_COLUMN_NAME(Choice):
+class CDR_COLUMN_NAME(models.TextChoices):
     call_date = _('call-date')
     clid = _('CLID')
     destination = _('destination')
@@ -37,13 +38,13 @@ class CDR_COLUMN_NAME(Choice):
     sell_cost = _('sell cost')
 
 
-class Export_choice(Choice):
+class Export_choice(models.TextChoices):
     CSV = 'csv', _('CSV')
     XLS = 'xls', _('XLS')
     JSON = 'json', _('JSON')
 
 
-class COMPARE_WITH(Choice):
+class COMPARE_WITH(models.IntegerChoices):
     previous_days = 1, _('previous days').title()
     previous_weeks = 2, _('previous weeks').title()
 

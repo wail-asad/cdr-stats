@@ -1,24 +1,13 @@
-#
-# CDR-Stats License
-# http://www.cdr-stats.org
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this file,
-# You can obtain one at http://mozilla.org/MPL/2.0/.
-#
-# Copyright (C) 2011-2015 Star2Billing S.L.
-#
-# The Initial Developer of the Original Code is
-# Arezqui Belaid <info@star2billing.com>
-#
-from django.conf.urls import patterns
+from django.contrib.auth.views import (
+    PasswordResetView, PasswordResetDoneView,
+    PasswordResetConfirmView, PasswordResetCompleteView
+)
+from django.urls import path
 
-
-urlpatterns = patterns('mod_registration.views',
-                       # Password reset for Customer UI
-                       (r'^password_reset/$', 'cust_password_reset'),
-                       (r'^password_reset/done/$', 'cust_password_reset_done'),
-                       (r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$',
-                        'cust_password_reset_confirm'),
-                       (r'^reset/done/$', 'cust_password_reset_complete'),
-                       )
+urlpatterns = [
+    path('password_reset/', PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # ... other URL patterns ...
+]

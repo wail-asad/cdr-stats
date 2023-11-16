@@ -15,7 +15,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from postgres.fields import json_field
+from django.db.models import JSONField
 from django_lets_go.utils import Choice
 from switch.models import Switch
 from country_dialcode.models import Prefix
@@ -32,7 +32,7 @@ import string
 random.seed()
 
 
-class CALL_TYPE(Choice):
+class CALL_TYPE(models.IntegerChoices):
 
     """
     List of call type
@@ -42,7 +42,7 @@ class CALL_TYPE(Choice):
     INTERNAL = 2, _('INTERNAL')
 
 
-class CDR_SOURCE_TYPE(Choice):
+class CDR_SOURCE_TYPE(models.IntegerChoices):
 
     """
     List of call source type
@@ -60,7 +60,7 @@ class CDR_SOURCE_TYPE(Choice):
     # change also switch.models.SWITCH_TYPE
 
 
-class CALL_DIRECTION(Choice):
+class CALL_DIRECTION(models.IntegerChoices):
 
     """
     List of call direction
@@ -156,9 +156,9 @@ class CDR(models.Model):
         * ``switch_id`` - Foreign key relationship to Switch
 
     """
-    user = models.ForeignKey(User, related_name="Call Owner")
-    switch = models.ForeignKey(Switch, verbose_name=_("Switch"), null=False)
-    cdr_source_type = models.IntegerField(choices=CDR_SOURCE_TYPE, default=CDR_SOURCE_TYPE.FREESWITCH,
+    user = models.ForeignKey(User, related_name="Call_Owner",on_delete=models.PROTECT)
+    switch = models.ForeignKey(Switch, verbose_name=_("Switch"),on_delete=models.PROTECT, null=False)
+    cdr_source_type = models.IntegerField(choices=CDR_SOURCE_TYPE.choices, default=CDR_SOURCE_TYPE.FREESWITCH,
                                           null=True, blank=True)
     # CID & Destination
     callid = models.CharField(max_length=80, help_text=_("VoIP call-ID"))
@@ -167,7 +167,7 @@ class CDR(models.Model):
     destination_number = models.CharField(max_length=80, verbose_name=_("destination number"),
                                           help_text=_("the international number of the recipient, without the leading +"),
                                           db_index=True)
-    dialcode = models.ForeignKey(Prefix, verbose_name=_("dialcode"), null=True, blank=True)
+    dialcode = models.ForeignKey(Prefix, verbose_name=_("dialcode"),on_delete=models.PROTECT, null=True, blank=True)
     state = models.CharField(max_length=5, verbose_name=_("State/Region"), null=True, blank=True)
     channel = models.CharField(max_length=80, verbose_name=_("channel"), null=True, blank=True)
 
@@ -180,15 +180,15 @@ class CDR(models.Model):
     waitsec = models.IntegerField(default=0, null=True, blank=True, verbose_name=_("wait sec"))
 
     # Disposition
-    hangup_cause = models.ForeignKey(HangupCause, verbose_name=_("hangup cause"),
+    hangup_cause = models.ForeignKey(HangupCause, verbose_name=_("hangup cause"),on_delete=models.PROTECT,
                                      null=False, blank=False)
-    direction = models.IntegerField(choices=CALL_DIRECTION, null=False, blank=False,
+    direction = models.IntegerField(choices=CALL_DIRECTION.choices, null=False, blank=False,
                                     default=CALL_DIRECTION.INBOUND, verbose_name=_("direction"),
                                     db_index=True)
-    country = models.ForeignKey(Country, null=True, blank=True, verbose_name=_("country"))
+    country = models.ForeignKey(Country,on_delete=models.PROTECT, null=True, blank=True, verbose_name=_("country"))
     authorized = models.BooleanField(default=False, verbose_name=_("authorized"))
 
-    call_type = models.IntegerField(choices=CALL_TYPE, default=CALL_TYPE.INTERNATIONAL,
+    call_type = models.IntegerField(choices=CALL_TYPE.choices, default=CALL_TYPE.INTERNATIONAL,
                                     null=True, blank=True)
 
     # Billing
@@ -203,7 +203,7 @@ class CDR(models.Model):
                                     max_digits=12, decimal_places=5)
 
     # Postgresql >= 9.4 Json field
-    data = json_field.JSONField()
+    data = JSONField()
 
     class Meta:
         db_table = 'voip_cdr'
@@ -331,3 +331,7 @@ class CDR(models.Model):
             cdr_source_type, authorized, country_id, direction,
             # accountcode, buy_rate, buy_cost, sell_rate, sell_cost
         )
+CORS_ORIGIN_WHITELIST = [
+    'https://localhost:8000',
+    # ... other origins ...
+]

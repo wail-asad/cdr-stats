@@ -12,7 +12,7 @@
 # Arezqui Belaid <info@star2billing.com>
 #
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from country_dialcode.models import Prefix
 from voip_gateway.models import Provider
 from voip_billing.function_def import prefix_allowed_to_call
@@ -46,7 +46,7 @@ class VoIPPlan(Model):
                             help_text=_("enter plan name"))
     pubname = models.CharField(max_length=255, verbose_name=_('publish name'),
                                help_text=_("enter publish name"))
-    lcrtype = models.IntegerField(choices=list(LCR_TYPE), verbose_name=_('LCR type'),
+    lcrtype = models.IntegerField(choices=LCR_TYPE, verbose_name=_('LCR type'),
                                   help_text=_("select LCR type"))
     created_date = models.DateTimeField(auto_now_add=True, verbose_name=_('date'))
     updated_date = models.DateTimeField(auto_now=True)
@@ -89,8 +89,8 @@ class VoIPPlan_BanPlan(models.Model):
 
     OnetoMany relationship between VoIPPlan & BanPlan
     """
-    voipplan = models.ForeignKey(VoIPPlan, related_name='voip plan')
-    banplan = models.ForeignKey(BanPlan, related_name='ban plan')
+    voipplan = models.ForeignKey(VoIPPlan,on_delete=models.PROTECT, related_name='voip_plan1')
+    banplan = models.ForeignKey(BanPlan,on_delete=models.PROTECT, related_name='ban_plan2')
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -108,8 +108,8 @@ class BanPrefix(models.Model):
     Ban prefixes are linked to Ban plan & VoIP with these prefix
     will not be authorized to send.
     """
-    ban_plan = models.ForeignKey(BanPlan, verbose_name=_('ban plan'), help_text=_("select ban plan"))
-    prefix = models.ForeignKey(Prefix, verbose_name=_('prefix'), help_text=_("select prefix"))
+    ban_plan = models.ForeignKey(BanPlan,on_delete=models.PROTECT, verbose_name=_('ban plan'), help_text=_("select ban plan"))
+    prefix = models.ForeignKey(Prefix,on_delete=models.PROTECT, verbose_name=_('prefix'), help_text=_("select prefix"))
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -171,8 +171,8 @@ class VoIPPlan_VoIPRetailPlan(models.Model):
 
     ManytoMany relationship between VoIPPlan & VoIPRetailPlan
     """
-    voipretailplan = models.ForeignKey(VoIPRetailPlan, related_name='VoIP Retail Plan')
-    voipplan = models.ForeignKey(VoIPPlan, related_name='VoIP Plan')
+    voipretailplan = models.ForeignKey(VoIPRetailPlan,on_delete=models.PROTECT, related_name='VoIP_Retail_Plan')
+    voipplan = models.ForeignKey(VoIPPlan,on_delete=models.PROTECT, related_name='VoIP_Plan')
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -192,10 +192,10 @@ class VoIPRetailRate(models.Model):
     VoIPRetailRates are grouped by VoIPRetailPlan, which will be then in turn be
     associated to a VoIPPlan
     """
-    voip_retail_plan_id = models.ForeignKey(VoIPRetailPlan, db_column="voip_retail_plan_id",
+    voip_retail_plan_id = models.ForeignKey(VoIPRetailPlan,on_delete=models.PROTECT, db_column="voip_retail_plan_id",
                                             verbose_name=_("retail plan"),
                                             help_text=_("select retail plan"))
-    prefix = models.ForeignKey(Prefix, db_column="prefix", verbose_name=_("prefix"),
+    prefix = models.ForeignKey(Prefix,on_delete=models.PROTECT, db_column="prefix", verbose_name=_("prefix"),
                                help_text=_("select prefix"))
     retail_rate = models.DecimalField(max_digits=10, decimal_places=4, default=0, verbose_name=_("rate"),
                                       help_text=_("enter Rate"))
@@ -256,7 +256,7 @@ class VoIPCarrierPlan(Model):
                                  help_text=_("enter metric in digit"))
     callsent = models.IntegerField(null=True, blank=True,
                                    verbose_name=_("message sent"))
-    voip_provider_id = models.ForeignKey(Provider, db_column="voip_provider_id",
+    voip_provider_id = models.ForeignKey(Provider,on_delete=models.PROTECT, db_column="voip_provider_id",
                                          verbose_name=_("provider"),
                                          help_text=_("select provider"))
     created_date = models.DateTimeField(auto_now_add=True, verbose_name=_("date"))
@@ -281,10 +281,10 @@ class VoIPCarrierRate(models.Model):
     VoIPCarrierRates are grouped by VoIPCarrierPlan, which will be then
     associated to a VoIPRetailPlan
     """
-    voip_carrier_plan_id = models.ForeignKey(VoIPCarrierPlan, db_column="voip_carrier_plan_id",
+    voip_carrier_plan_id = models.ForeignKey(VoIPCarrierPlan,on_delete=models.PROTECT, db_column="voip_carrier_plan_id",
                                              verbose_name=_("carrier plan"),
                                              help_text=_("select carrier plan"))
-    prefix = models.ForeignKey(Prefix, db_column="prefix", verbose_name=_("prefix"),
+    prefix = models.ForeignKey(Prefix,on_delete=models.PROTECT, db_column="prefix", verbose_name=_("prefix"),
                                help_text=_("select prefix"))
     carrier_rate = models.DecimalField(max_digits=10, decimal_places=4, default=0, verbose_name=_("rate"),
                                        help_text=_("enter rate"))
@@ -326,8 +326,8 @@ class VoIPPlan_VoIPCarrierPlan(models.Model):
 
     ManytoMany relationship between VoIPPlan & VoIPCarrierPlan
     """
-    voipcarrierplan = models.ForeignKey(VoIPCarrierPlan, related_name='carrier plan')
-    voipplan = models.ForeignKey(VoIPPlan, related_name='voip_plan')
+    voipcarrierplan = models.ForeignKey(VoIPCarrierPlan,on_delete=models.PROTECT, related_name='carrier_plan')
+    voipplan = models.ForeignKey(VoIPPlan,on_delete=models.PROTECT, related_name='voip_plan')
     created_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:

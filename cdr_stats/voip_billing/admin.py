@@ -13,11 +13,10 @@
 #
 from django import forms
 from django.contrib import admin
-from django.conf.urls import patterns
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.template import RequestContext
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.contrib import messages
 
 from country_dialcode.models import Prefix
@@ -38,6 +37,7 @@ from django_lets_go.admin_custom_actions import export_as_csv_action
 from datetime import datetime
 import tablib
 import csv
+from django.urls import path
 
 
 def prefix_qs():
@@ -96,12 +96,12 @@ class VoIPPlanAdmin(admin.ModelAdmin):
     ]
 
     def get_urls(self):
-        urls = super(VoIPPlanAdmin, self).get_urls()
-        my_urls = patterns('',
-                           (r'^simulator/$', self.admin_site.admin_view(self.simulator)),
-                           (r'^export/$', self.admin_site.admin_view(self.export)),
-                           (r'^rebilling/$', self.admin_site.admin_view(self.rebilling)),
-                           )
+        urls = super().get_urls()
+        my_urls = [
+            path('simulator/', self.admin_site.admin_view(self.simulator), name='simulator'),
+            path('export/', self.admin_site.admin_view(self.export), name='export'),
+            path('rebilling/', self.admin_site.admin_view(self.rebilling), name='rebilling'),
+        ]
         return my_urls + urls
 
     def simulator(self, request):
@@ -140,7 +140,7 @@ class VoIPPlanAdmin(admin.ModelAdmin):
             'data': data,
         }
         ctx = RequestContext(request, variables)
-        return render_to_response('admin/voip_billing/voipplan/simulator.html', context_instance=ctx)
+        return render('admin/voip_billing/voipplan/simulator.html', context_instance=ctx)
 
     # TODO: Replace export with https://django-import-export.readthedocs.org
     def export(self, request):
@@ -196,7 +196,7 @@ class VoIPPlanAdmin(admin.ModelAdmin):
             'opts': opts,
             'model_name': opts.object_name.lower(),
         })
-        return render_to_response('admin/voip_billing/voipplan/export.html', context_instance=ctx)
+        return render('admin/voip_billing/voipplan/export.html', context_instance=ctx)
 
     def rebilling(self, request):
         """
@@ -258,7 +258,7 @@ class VoIPPlanAdmin(admin.ModelAdmin):
                         'call_rebill_count': call_rebill_count,
                         'CONFIRMATION_TYPE': CONFIRMATION_TYPE,
                     })
-                    return render_to_response('admin/voip_billing/voipplan/rebilling.html', context_instance=ctx)
+                    return render('admin/voip_billing/voipplan/rebilling.html', context_instance=ctx)
 
                 voipplan_id = request.user.userprofile.voipplan_id
 
@@ -280,7 +280,7 @@ class VoIPPlanAdmin(admin.ModelAdmin):
             'title': _('Rebill VoIP Call'),
             'call_rebill_count': call_rebill_count,
         })
-        return render_to_response('admin/voip_billing/voipplan/rebilling.html', context_instance=ctx)
+        return render('admin/voip_billing/voipplan/rebilling.html', context_instance=ctx)
 
 admin.site.register(VoIPPlan, VoIPPlanAdmin)
 
@@ -303,10 +303,10 @@ class BanPrefixAdmin(AutocompleteModelAdmin):
     }
 
     def get_urls(self):
-        urls = super(BanPrefixAdmin, self).get_urls()
-        my_urls = patterns('',
-                           (r'^search/$', self.admin_site.admin_view(self.search)),
-                           )
+        urls = super().get_urls()
+        my_urls = [
+            path('search/', self.admin_site.admin_view(self.search), name='search'),
+        ]
         return my_urls + urls
 
 admin.site.register(BanPrefix, BanPrefixAdmin)
@@ -362,13 +362,14 @@ class VoIPRetailRateAdmin(admin.ModelAdmin):
         return super(VoIPRetailRateAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_urls(self):
-        urls = super(VoIPRetailRateAdmin, self).get_urls()
-        my_urls = patterns('',
-                           (r'^$', self.admin_site.admin_view(self.changelist_view)),
-                           (r'^import_rr/$', self.admin_site.admin_view(self.import_rr)),
-                           (r'^export_rr/$', self.admin_site.admin_view(self.export_rr)),
-                           # (r'^search/$', self.admin_site.admin_view(self.search)),
-                           )
+        urls = super().get_urls()
+        my_urls = [
+            path('', self.admin_site.admin_view(self.changelist_view), name='voipretailrate_changelist'),
+            path('import_rr/', self.admin_site.admin_view(self.import_rr), name='import_rr'),
+            path('export_rr/', self.admin_site.admin_view(self.export_rr), name='export_rr'),
+            # Uncomment and update the following line if you have a corresponding view function
+            # path('search/', self.admin_site.admin_view(self.search), name='search'),
+        ]
         return my_urls + urls
 
     def queryset(self, request):
@@ -437,7 +438,7 @@ class VoIPRetailRateAdmin(admin.ModelAdmin):
             'opts': opts,
             'model_name': opts.object_name.lower(),
         })
-        return render_to_response('admin/voip_billing/voipretailrate/export_rr.html', context_instance=ctx)
+        return render('admin/voip_billing/voipretailrate/export_rr.html', context_instance=ctx)
 
     def import_rr(self, request):
         """
@@ -514,7 +515,7 @@ class VoIPRetailRateAdmin(admin.ModelAdmin):
             'error_import_list': error_import_list,
             'type_error_import_list': type_error_import_list,
         })
-        return render_to_response('admin/voip_billing/voipretailrate/import_rr.html', context_instance=ctx)
+        return render('admin/voip_billing/voipretailrate/import_rr.html', context_instance=ctx)
 admin.site.register(VoIPRetailRate, VoIPRetailRateAdmin)
 
 
@@ -576,13 +577,14 @@ class VoIPCarrierRateAdmin(admin.ModelAdmin):
         return super(VoIPCarrierRateAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_urls(self):
-        urls = super(VoIPCarrierRateAdmin, self).get_urls()
-        my_urls = patterns('',
-                           (r'^$', self.admin_site.admin_view(self.changelist_view)),
-                           (r'^import_cr/$', self.admin_site.admin_view(self.import_cr)),
-                           (r'^export_cr/$', self.admin_site.admin_view(self.export_cr)),
-                           # (r'^search/$', self.admin_site.admin_view(self.search)),
-                           )
+        urls = super().get_urls()
+        my_urls = [
+            path('', self.admin_site.admin_view(self.changelist_view), name='voipcarrierrate_changelist'),
+            path('import_cr/', self.admin_site.admin_view(self.import_cr), name='import_cr'),
+            path('export_cr/', self.admin_site.admin_view(self.export_cr), name='export_cr'),
+            # Uncomment and update the following line if you have a corresponding view function
+            # path('search/', self.admin_site.admin_view(self.search), name='search'),
+        ]
         return my_urls + urls
 
     def queryset(self, request):
@@ -652,7 +654,7 @@ class VoIPCarrierRateAdmin(admin.ModelAdmin):
             'opts': opts,
             'model_name': opts.object_name.lower(),
         })
-        return render_to_response('admin/voip_billing/voipcarrierrate/export_cr.html', context_instance=ctx)
+        return render('admin/voip_billing/voipcarrierrate/export_cr.html', context_instance=ctx)
 
     def import_cr(self, request):
         """
@@ -774,5 +776,5 @@ class VoIPCarrierRateAdmin(admin.ModelAdmin):
             'rr_error_import_list': rr_error_import_list,
             'type_error_import_list': type_error_import_list,
         })
-        return render_to_response('admin/voip_billing/voipcarrierrate/import_cr.html', context_instance=ctx)
+        return render('admin/voip_billing/voipcarrierrate/import_cr.html', context_instance=ctx)
 admin.site.register(VoIPCarrierRate, VoIPCarrierRateAdmin)

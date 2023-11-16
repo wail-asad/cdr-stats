@@ -24,7 +24,7 @@ from datetime import date, timedelta
 def print_shell(shell, message):
     """ helper to print to shell"""
     if shell:
-        print message
+        print(message)
 
 
 def set_int_default(val, default):
@@ -53,7 +53,7 @@ def chk_ipaddress(ipaddress):
         switch.save()
 
     if not switch.id:
-        print "Error when adding new Switch!"
+        print("Error when adding new Switch!")
         raise SystemExit
 
     if DEV_ADD_IP:

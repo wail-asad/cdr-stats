@@ -12,7 +12,7 @@
 # Arezqui Belaid <info@star2billing.com>
 #
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_lets_go.intermediate_model_base_class import Model
 from voip_gateway.constants import GATEWAY_STATUS
 
@@ -58,13 +58,13 @@ class Gateway(Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name=_('date'))
     updated_date = models.DateTimeField(auto_now=True)
 
-    failover = models.ForeignKey('self', null=True, blank=True,
+    failover = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True,
                                  related_name="Failover", help_text=_("select gateway"))
     addparameter = models.CharField(max_length=360, blank=True)
     count_call = models.IntegerField(null=True, blank=True)
     count_using = models.IntegerField(null=True, blank=True)
     maximum_call = models.IntegerField(null=True, blank=True)
-    status = models.IntegerField(choices=list(GATEWAY_STATUS),
+    status = models.IntegerField(choices=GATEWAY_STATUS.choices,
                                  default=GATEWAY_STATUS.INACTIVE, verbose_name=_("gateway status"),
                                  blank=True, null=True)
     max_call_gateway = models.IntegerField(null=True, blank=True,
@@ -103,7 +103,7 @@ class Provider(Model):
                                    help_text=_("short description about provider"))
     metric = models.IntegerField(default=10, verbose_name=_('metric'),
                                  help_text=_("enter metric in digit"))
-    gateway = models.ForeignKey(Gateway, null=True, blank=True,
+    gateway = models.ForeignKey(Gateway, on_delete=models.PROTECT,null=True, blank=True,
                                 help_text=_("select gateway"))
     created_date = models.DateTimeField(auto_now_add=True, verbose_name=_('date'))
     updated_date = models.DateTimeField(auto_now=True)

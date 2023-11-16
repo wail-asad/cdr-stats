@@ -16,11 +16,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from user_profile.models import UserProfile, Customer, Staff, AccountCode
-from notification.models import Notice
-from notification.admin import NoticeAdmin
+from notifications.models import Notification as Notice
+from notifications.admin import NotificationAdmin as NoticeAdmin
 
 
 class UserProfileInline(admin.StackedInline):

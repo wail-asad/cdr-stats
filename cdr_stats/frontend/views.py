@@ -15,10 +15,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.conf import settings
 from django.template.context import RequestContext
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django_lets_go.common_functions import get_news
 from frontend.forms import LoginForm
 from collections import OrderedDict
@@ -51,7 +51,7 @@ def index(request):
         'errorlogin': errorlogin,
         'news': get_news(settings.NEWS_URL),
     }
-    return render_to_response('frontend/index.html', data, context_instance=RequestContext(request))
+    return render(request,'frontend/index.html', data)
 
 
 @permission_required('user_profile.diagnostic', login_url='/')
@@ -102,7 +102,7 @@ def diagnostic(request):
         'error_msg': error_msg,
         'conn_report': conn_report,
     }
-    return render_to_response('frontend/diagnostic.html', data, context_instance=RequestContext(request))
+    return render('frontend/diagnostic.html', data, context_instance=RequestContext(request))
 
 
 def logout_view(request):
@@ -162,7 +162,7 @@ def login_view(request):
         'news': get_news(news_url),
         'is_authenticated': request.user.is_authenticated(),
     }
-    return render_to_response('frontend/index.html', data, context_instance=RequestContext(request))
+    return render('frontend/index.html', data, context_instance=RequestContext(request))
 
 
 def pleaselog(request):
@@ -170,4 +170,4 @@ def pleaselog(request):
         'loginform': LoginForm(),
         'notlogged': True,
     }
-    return render_to_response('frontend/index.html', data, context_instance=RequestContext(request))
+    return render('frontend/index.html', data, context_instance=RequestContext(request))

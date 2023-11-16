@@ -11,33 +11,26 @@
 # The Initial Developer of the Original Code is
 # Arezqui Belaid <info@star2billing.com>
 #
-from celery.task import Task
+
+from celery import shared_task
 from voip_billing.rate_engine import calculate_call_cost
 from cdr.models import CDR
 import logging
 
+@shared_task
+def rebilling_task(calls_kwargs, voipplan_id):
+    logging.debug("Start Calls Rebilling...")
 
-class RebillingTask(Task):
+    cdr_rebill = CDR.objects.filter(**calls_kwargs)
+    for cdr in cdr_rebill:
+        new_rate = calculate_call_cost(voipplan_id, cdr.destination_number, cdr.billsec)
+        cdr.buy_rate = new_rate['buy_rate']
+        cdr.buy_cost = new_rate['buy_cost']
+        cdr.sell_rate = new_rate['sell_rate']
+        cdr.sell_cost = new_rate['sell_cost']
+        cdr.save()
 
-    """
-    Re-billing for VoIPCall
+    logging.debug("End Calls Rebilling...")
+    return True
 
-    **Usage**:
-
-        RebillingTask.delay(calls_kwargs, voipplan_id)
-    """
-
-    def run(self, calls_kwargs, voipplan_id, **kwargs):
-        logging.debug("Start Calls Rebilling...")
-
-        cdr_rebill = CDR.objects.filter(calls_kwargs)
-        for cdr in cdr_rebill:
-            new_rate = calculate_call_cost(voipplan_id, cdr['destination_number'], cdr['billsec'])
-            cdr.buy_rate = new_rate['buy_rate']
-            cdr.buy_cost = new_rate['buy_cost']
-            cdr.sell_rate = new_rate['sell_rate']
-            cdr.sell_cost = new_rate['sell_cost']
-            cdr.save()
-
-        logging.debug("End Calls Rebilling...")
-        return True
+RebillingTask = rebilling_task

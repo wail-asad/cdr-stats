@@ -16,13 +16,14 @@
 from __future__ import division
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.mail import send_mail, mail_admins
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
-from celery.task import PeriodicTask, task
-from notification import models as notification
+from celery import shared_task
+from celery.schedules import crontab
+from notifications import models as notification
 from django_lets_go.only_one_task import only_one
 from cdr_alert.constants import PERIOD, ALARM_TYPE, ALERT_CONDITION, ALERT_CONDITION_ADD_ON,\
     ALARM_REPROT_STATUS
@@ -301,8 +302,8 @@ def run_alarm(alarm_obj, logger):
 
     return running_alarm_test_data
 
-
-class chk_alarm(PeriodicTask):
+@shared_task
+class chk_alarm():
 
     """A periodic task to determine unusual call patterns.
 
@@ -365,7 +366,7 @@ def notify_admin_without_mail(notice_id, email_id):
     return True
 
 
-@task
+@shared_task
 def blacklist_whitelist_notification(notice_type):
     """
     Send email notification whne destination number matched with
@@ -404,7 +405,8 @@ def blacklist_whitelist_notification(notice_type):
 
 
 # Email previous day's CDR Report
-class send_cdr_report(PeriodicTask):
+@shared_task
+class send_cdr_report():
 
     """A periodic task to send previous day's CDR Report as mail
 

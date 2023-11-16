@@ -16,8 +16,7 @@
 from django import forms
 from django.conf import settings
 from django.core.validators import validate_email
-from django.utils.translation import ugettext_lazy as _
-from django_lets_go.common_functions import comp_day_range
+from django.utils.translation import gettext_lazy as _
 from cdr.functions_def import get_switch_list, get_country_list
 from cdr.constants import STRING_SEARCH_TYPE_LIST, CDR_FIELD_LIST, CDR_FIELD_LIST_NUM
 from cdr.models import HangupCause
@@ -136,7 +135,7 @@ class CdrSearchForm(SearchForm):
                                        )
     result = forms.ChoiceField(label=_('result').capitalize(), required=False,
                                choices=((1, _('minutes')), (2, _('seconds'))),
-                               widget=forms.RadioSelect(renderer=HorizRadioRenderer))
+                               widget=HorizRadioRenderer())
     records_per_page = forms.ChoiceField(label=_('CDR per page'), required=False,
                                          initial=settings.PAGE_SIZE, choices=PAGE_SIZE_LIST)
 
@@ -257,7 +256,9 @@ class CdrOverviewForm(CdrSearchForm):
         )
         common_submit_buttons(self.helper.layout, 'search')
 
-
+def comp_day_range(num_days):
+    # Example implementation - adjust as per your requirement
+    return [(i, 'Day {}'.format(i)) for i in range(1, num_days + 1)]
 class CompareCallSearchForm(SearchForm):
 
     """

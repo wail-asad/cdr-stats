@@ -15,7 +15,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from mod_utils.helper import Export_choice
 
 from crispy_forms.layout import HTML
@@ -23,7 +23,7 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.layout import Submit
 
 
-class HorizRadioRenderer(forms.RadioSelect.renderer):
+class HorizRadioRenderer(forms.RadioSelect):
 
     """This overrides widget method to put radio buttons horizontally
     instead of vertically.
@@ -39,9 +39,9 @@ class Exportfile(forms.Form):
     """
     Abstract Form : export file in various format e.g. XLS, CSV, JSON
     """
-    export_to = forms.TypedChoiceField(label=_('export to').capitalize(), required=True,
-                                       choices=list(Export_choice),
-                                       widget=forms.RadioSelect(renderer=HorizRadioRenderer))
+    export_to = forms.TypedChoiceField(label=_('export to').capitalize(), required=True)
+                                    #    choices=Export_choice.choices,
+                                    #    widget=HorizRadioRenderer())
 
 
 class SaveUserModelForm(ModelForm):

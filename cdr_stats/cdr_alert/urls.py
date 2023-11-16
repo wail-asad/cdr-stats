@@ -1,27 +1,13 @@
-#
-# CDR-Stats License
-# http://www.cdr-stats.org
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this file,
-# You can obtain one at http://mozilla.org/MPL/2.0/.
-#
-# Copyright (C) 2011-2015 Star2Billing S.L.
-#
-# The Initial Developer of the Original Code is
-# Arezqui Belaid <info@star2billing.com>
-#
+from django.urls import path, re_path
+from cdr_alert import views
 
-from django.conf.urls import patterns
+urlpatterns = [
+    path('alert/', views.alarm_list, name='alarm_list'),
+    path('alert/add/', views.alarm_add, name='alarm_add'),
+    re_path(r'^alert/del/(?P<alarm_id>.+)/$', views.alarm_del, name='alarm_del'),
+    re_path(r'^alert/test/(?P<test_id>.+)/$', views.alarm_test, name='alarm_test'),
+    re_path(r'^alert/(?P<alarm_id>.+)/$', views.alarm_change, name='alarm_change'),
 
-urlpatterns = patterns('cdr_alert.views',
-                       # User detail change for Customer UI
-                       (r'^alert/$', 'alarm_list'),
-                       (r'^alert/add/$', 'alarm_add'),
-                       (r'^alert/del/(.+)/$', 'alarm_del'),
-                       (r'^alert/test/(.+)/$', 'alarm_test'),
-                       (r'^alert/(.+)/$', 'alarm_change'),
-
-                       (r'^trust_control/$', 'trust_control'),
-                       (r'^alert_report/$', 'alert_report'),
-                       )
+    path('trust_control/', views.trust_control, name='trust_control'),
+    path('alert_report/', views.alert_report, name='alert_report'),
+]

@@ -65,19 +65,19 @@ class Alarm(models.Model):
 
     **Name of DB table**: alert
     """
-    user = models.ForeignKey('auth.User', related_name='Alarm_owner')
+    user = models.ForeignKey('auth.User',on_delete=models.PROTECT, related_name='alarm_owner')
     name = models.CharField(max_length=100, verbose_name=_('name'))
-    period = models.PositiveIntegerField(choices=list(PERIOD), default=PERIOD.DAY, verbose_name=_('period'),
+    period = models.PositiveIntegerField(choices=PERIOD.choices, default=PERIOD.DAY, verbose_name=_('period'),
                                          help_text=_('interval to apply alarm'))
-    type = models.PositiveIntegerField(choices=list(ALARM_TYPE), default=ALARM_TYPE.ALOC, verbose_name=_('type'),
+    type = models.PositiveIntegerField(choices=ALARM_TYPE.choices, default=ALARM_TYPE.ALOC, verbose_name=_('type'),
                                        help_text=_('ALOC (average length of call) ; ASR (answer seize ratio) ; CIC (Consecutive Incomplete Calls) '))
-    alert_condition = models.PositiveIntegerField(choices=list(ALERT_CONDITION), verbose_name=_('condition'),
+    alert_condition = models.PositiveIntegerField(choices=ALERT_CONDITION.choices, verbose_name=_('condition'),
                                                   default=ALERT_CONDITION.IS_LESS_THAN)
     alert_value = models.DecimalField(verbose_name=_('value'), max_digits=5, decimal_places=2,
                                       blank=True, null=True, help_text=_('input the value for the alert'))
-    alert_condition_add_on = models.PositiveIntegerField(choices=list(ALERT_CONDITION_ADD_ON),
+    alert_condition_add_on = models.PositiveIntegerField(choices=ALERT_CONDITION_ADD_ON.choices,
                                                          default=ALERT_CONDITION_ADD_ON.SAME_DAY)
-    status = models.PositiveIntegerField(choices=list(STATUS), default=1, verbose_name=_('status'))
+    status = models.PositiveIntegerField(choices=STATUS.choices, default=1, verbose_name=_('status'))
     email_to_send_alarm = models.EmailField(max_length=100, verbose_name=_('email to send alarm'))
     created_date = models.DateTimeField(auto_now_add=True, verbose_name=_('date'))
     updated_date = models.DateTimeField(auto_now=True)
@@ -107,10 +107,10 @@ class AlarmReport(models.Model):
 
     **Name of DB table**: alert_report
     """
-    alarm = models.ForeignKey(Alarm, verbose_name=_('alarm'), help_text=_("select Alarm"))
+    alarm = models.ForeignKey(Alarm,on_delete=models.PROTECT, verbose_name=_('alarm'), help_text=_("select Alarm"))
     calculatedvalue = models.DecimalField(verbose_name=_('calculated value'), blank=True, null=True,
                                           max_digits=10, decimal_places=3)
-    status = models.PositiveIntegerField(choices=list(ALARM_REPROT_STATUS), verbose_name=_('status'),
+    status = models.PositiveIntegerField(choices=ALARM_REPROT_STATUS.choices, verbose_name=_('status'),
                                          default=ALARM_REPROT_STATUS.NO_ALARM_SENT)
     daterun = models.DateTimeField(auto_now_add=True, verbose_name=_('date'))
 
@@ -138,18 +138,15 @@ class Blacklist(models.Model):
 
     **Name of DB table**: alert_blacklist
     """
-    user = models.ForeignKey('auth.User', related_name='Blacklist_owner')
+    user = models.ForeignKey('auth.User',on_delete=models.PROTECT, related_name='Blacklist_owner')
     phonenumber_prefix = models.PositiveIntegerField(blank=False, null=False)
-    country = models.ForeignKey(Country, null=True, blank=True, verbose_name=_("country"),
+    country = models.ForeignKey(Country,on_delete=models.PROTECT, null=True, blank=True, verbose_name=_("country"),
                                 help_text=_("select country"))
 
     def __unicode__(self):
         return '[%s] %s' % (self.id, self.phonenumber_prefix)
 
     class Meta:
-        permissions = (
-            ("view_blacklist", _('can see blacklist country/prefix')),
-        )
         verbose_name = _("blacklist")
         verbose_name_plural = _("blacklist")
         db_table = "alert_blacklist"
@@ -167,18 +164,15 @@ class Whitelist(models.Model):
 
     **Name of DB table**: alert_whitelist
     """
-    user = models.ForeignKey('auth.User', related_name='whitelist_owner')
+    user = models.ForeignKey('auth.User',on_delete=models.PROTECT, related_name='whitelist_owner')
     phonenumber_prefix = models.PositiveIntegerField(blank=False, null=False)
-    country = models.ForeignKey(Country, null=True, blank=True, verbose_name=_("country"),
+    country = models.ForeignKey(Country,on_delete=models.PROTECT, null=True, blank=True, verbose_name=_("country"),
                                 help_text=_("select country"))
 
     def __unicode__(self):
         return '[%s] %s' % (self.id, self.phonenumber_prefix)
 
     class Meta:
-        permissions = (
-            ("view_whitelist", _('can see whitelist country/prefix')),
-        )
         verbose_name = _("whitelist")
         verbose_name_plural = _("whitelist")
         db_table = "alert_whitelist"

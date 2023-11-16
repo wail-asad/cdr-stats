@@ -1,12 +1,11 @@
 from django.db import models
 from django_lets_go.utils import Choice
 from django.utils.translation import gettext_lazy as _
-from django_extensions.db.fields import UUIDField
 import caching.base
-
+import uuid
 
 # todo: remove first 2 elements from CDR_SOURCE_TYPE
-class SWITCH_TYPE(Choice):
+class SWITCH_TYPE(models.IntegerChoices):
 
     """
     List of switches
@@ -39,9 +38,9 @@ class Switch(caching.base.CachingMixin, models.Model):
                             null=True, unique=True)
     ipaddress = models.CharField(max_length=100, blank=False,
                                  null=False, unique=True)
-    switch_type = models.IntegerField(choices=SWITCH_TYPE, default=SWITCH_TYPE.FREESWITCH,
+    switch_type = models.IntegerField(choices=SWITCH_TYPE.choices, default=SWITCH_TYPE.FREESWITCH,
                                       max_length=100, null=False)
-    key_uuid = UUIDField(auto=True)
+    key_uuid = models.UUIDField(default=uuid.uuid4)
 
     objects = caching.base.CachingManager()
 

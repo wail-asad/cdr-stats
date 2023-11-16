@@ -19,11 +19,11 @@
                 </ul>
                 {% endif %}
             </li>
-            {% ifequal model.title 'VoIP plans' %}
+            {% if model.title == 'VoIP plans' %}
                 <li>
                     <a href="/admin/voip_billing/voipplan/rebilling/">{% trans "rebilling"|capfirst %}</a>
                 </li>
-            {% endifequal %}
+            {% endif %}
             {% endspaceless %}
             {% endfor %}
         </ul>

@@ -13,7 +13,7 @@
 #
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.context import RequestContext
 from voip_billing.models import VoIPRetailRate
 from voip_billing.forms import PrefixRetailRateForm, SimulatorForm, BillingReportForm
@@ -118,7 +118,7 @@ def voip_rates(request):
         'up_icon': '<i class="glyphicon glyphicon-chevron-up"></i>',
         'down_icon': '<i class="glyphicon glyphicon-chevron-down"></i>'
     }
-    return render_to_response('voip_billing/rates.html',
+    return render('voip_billing/rates.html',
                               variables,
                               context_instance=RequestContext(request))
 
@@ -197,7 +197,7 @@ def simulator(request):
         'form': form,
         'data': data,
     }
-    return render_to_response('voip_billing/simulator.html',
+    return render('voip_billing/simulator.html',
                               data,
                               context_instance=RequestContext(request))
 
@@ -290,6 +290,6 @@ def billing_report(request):
         'metric_aggr': metric_aggr,
         'country_data': country_data,
     }
-    return render_to_response('voip_billing/billing_report.html',
+    return render('voip_billing/billing_report.html',
                               data,
                               context_instance=RequestContext(request))

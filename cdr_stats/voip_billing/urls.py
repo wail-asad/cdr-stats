@@ -1,23 +1,10 @@
-#
-# CDR-Stats License
-# http://www.cdr-stats.org
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this file,
-# You can obtain one at http://mozilla.org/MPL/2.0/.
-#
-# Copyright (C) 2011-2015 Star2Billing S.L.
-#
-# The Initial Developer of the Original Code is
-# Arezqui Belaid <info@star2billing.com>
-#
-from django.conf.urls import patterns
+from django.urls import path, re_path
+from voip_billing import views
 
-
-urlpatterns = patterns('voip_billing.views',
-
-                       (r'^rates/$', 'voip_rates'),
-                       (r'^export_rate/$', 'export_rate'),
-                       (r'^simulator/$', 'simulator'),
-                       (r'^billing_report/$', 'billing_report'),
-                       )
+urlpatterns = [
+    path('rates/', views.voip_rates, name='voip_rates'),
+    path('export_rate/', views.export_rate, name='export_rate'),
+    path('simulator/', views.simulator, name='simulator'),
+    path('billing_report/', views.billing_report, name='billing_report'),
+    # ... other URL patterns ...
+]

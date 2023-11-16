@@ -12,7 +12,7 @@
 # Arezqui Belaid <info@star2billing.com>
 #
 from django import template
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from cdr.functions_def import get_hangupcause_name, get_switch_ip_addr
 from django.utils.safestring import mark_safe
 import json

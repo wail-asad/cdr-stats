@@ -1,21 +1,7 @@
-#
-# CDR-Stats License
-# http://www.cdr-stats.org
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this file,
-# You can obtain one at http://mozilla.org/MPL/2.0/.
-#
-# Copyright (C) 2011-2015 Star2Billing S.L.
-#
-# The Initial Developer of the Original Code is
-# Arezqui Belaid <info@star2billing.com>
-#
+from django.urls import path, re_path
+from user_profile import views
 
-from django.conf.urls import patterns
-
-
-urlpatterns = patterns('user_profile.views',
-                       # User detail change for Customer UI
-                       (r'^user_detail_change/$', 'customer_detail_change'),
-                       )
+urlpatterns = [
+    path('user_detail_change/', views.customer_detail_change, name='customer_detail_change'),
+    # Use re_path if you need regular expressions for other URLs
+]

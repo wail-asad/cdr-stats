@@ -14,8 +14,9 @@
 #
 
 from django.conf import settings
-from django.db.models import signals
-from django.utils.translation import ugettext_noop as _
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+from django.utils.translation import gettext_noop as _
 from user_profile.constants import NOTICE_TYPE
 
 
@@ -23,8 +24,9 @@ from user_profile.constants import NOTICE_TYPE
 # http://stackoverflow.com/questions/4455533/what-is-management-py-in-django
 
 if "notification" in settings.INSTALLED_APPS:
-    from notification import models as notification
+    from notifications import models as notification
 
+    @receiver(post_migrate, sender=notification)
     def create_notice_types(app, created_models, verbosity, **kwargs):
         kwargs = {}
         kwargs['default'] = NOTICE_TYPE.average_length_of_call
@@ -43,7 +45,6 @@ if "notification" in settings.INSTALLED_APPS:
         notification.create_notice_type("whitelist_prefix",
                                         _("Whitelist Prefix"),
                                         _("whitelist prefix"), **kwargs)
-
-    signals.post_syncdb.connect(create_notice_types, sender=notification)
+    
 else:
-    print "Skipping creation of NoticeTypes as notification app not found"
+    print("Skipping creation of NoticeTypes as notification app not found")

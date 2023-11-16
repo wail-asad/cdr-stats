@@ -1,24 +1,12 @@
-#
-# CDR-Stats License
-# http://www.cdr-stats.org
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this file,
-# You can obtain one at http://mozilla.org/MPL/2.0/.
-#
-# Copyright (C) 2011-2015 Star2Billing S.L.
-#
-# The Initial Developer of the Original Code is
-# Arezqui Belaid <info@star2billing.com>
-#
-from django.conf.urls import patterns
+from django.urls import path, re_path
+from frontend import views
 
-
-urlpatterns = patterns('frontend.views',
-                       (r'^$', 'index'),
-                       (r'^index/$', 'index'),
-                       (r'^diagnostic/$', 'diagnostic'),
-                       (r'^login/$', 'login_view'),
-                       (r'^logout/$', 'logout_view'),
-                       (r'^pleaselog/$', 'pleaselog'),
-                       )
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('index/', views.index, name='index'),
+    path('diagnostic/', views.diagnostic, name='diagnostic'),
+    path('login/', views.login_view, name='login_view'),
+    path('logout/', views.logout_view, name='logout_view'),
+    path('pleaselog/', views.pleaselog, name='pleaselog'),
+    # ... other URL patterns ...
+]

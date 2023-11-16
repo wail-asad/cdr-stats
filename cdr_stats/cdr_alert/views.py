@@ -14,7 +14,7 @@
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import gettext as _
 # from django.conf import settings
@@ -62,7 +62,7 @@ def alarm_list(request):
     }
     request.session['msg'] = ''
     request.session['error_msg'] = ''
-    return render_to_response('cdr_alert/alarm/list.html', data, context_instance=RequestContext(request))
+    return render('cdr_alert/alarm/list.html', data, context_instance=RequestContext(request))
 
 
 @permission_required('cdr_alert.add_alarm', login_url='/')
@@ -91,7 +91,7 @@ def alarm_add(request):
         'form': form,
         'action': 'add',
     }
-    return render_to_response('cdr_alert/alarm/change.html', data, context_instance=RequestContext(request))
+    return render('cdr_alert/alarm/change.html', data, context_instance=RequestContext(request))
 
 
 @permission_required('cdr_alert.alarm_test', login_url='/')
@@ -128,7 +128,7 @@ def alarm_test(request, object_id):
         'ALERT_CONDITION': ALERT_CONDITION,
         'PERIOD': PERIOD,
     }
-    return render_to_response('cdr_alert/alarm/alarm_testing.html', data, context_instance=RequestContext(request))
+    return render('cdr_alert/alarm/alarm_testing.html', data, context_instance=RequestContext(request))
 
 
 @permission_required('cdr_alert.delete_alarm', login_url='/')
@@ -199,7 +199,7 @@ def alarm_change(request, object_id):
         'form': form,
         'action': 'update',
     }
-    return render_to_response('cdr_alert/alarm/change.html', data, context_instance=RequestContext(request))
+    return render('cdr_alert/alarm/change.html', data, context_instance=RequestContext(request))
 
 
 def last_seven_days_report(request, kwargs):
@@ -330,7 +330,7 @@ def alert_report(request):
             'jquery_on_ready': True,
         },
     }
-    return render_to_response('cdr_alert/alarm_report.html', data, context_instance=RequestContext(request))
+    return render('cdr_alert/alarm_report.html', data, context_instance=RequestContext(request))
 
 
 @permission_required('cdr_alert.view_whitelist', login_url='/')
@@ -357,4 +357,4 @@ def trust_control(request):
         'blacklist': blacklist,
         'whitelist': whitelist,
     }
-    return render_to_response('cdr_alert/common_black_white_list.html', data, context_instance=RequestContext(request))
+    return render('cdr_alert/common_black_white_list.html', data, context_instance=RequestContext(request))

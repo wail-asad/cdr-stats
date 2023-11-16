@@ -15,10 +15,10 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 # from django.http import HttpResponseRedirect
 from django.template.context import RequestContext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from user_profile.models import UserProfile
 from user_profile.forms import UserChangeDetailForm, UserChangeDetailExtendForm, UserPasswordChangeForm
 from cdr.decorators import check_user_detail
@@ -97,4 +97,4 @@ def customer_detail_change(request):
         'error_pass': error_pass,
         'action': action,
     }
-    return render_to_response('user_profile/user_detail_change.html', data, context_instance=RequestContext(request))
+    return render('user_profile/user_detail_change.html', data, context_instance=RequestContext(request))

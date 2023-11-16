@@ -14,7 +14,7 @@
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.context import RequestContext
 from django.utils.translation import gettext as _
 from django.conf import settings
@@ -278,7 +278,7 @@ def cdr_view(request):
         'down_icon': '<i class="glyphicon glyphicon-chevron-down"></i>'
     }
     logging.debug('CDR View End')
-    return render_to_response('cdr/list.html', template_data, context_instance=RequestContext(request))
+    return render('cdr/list.html', template_data, context_instance=RequestContext(request))
 
 
 @login_required
@@ -365,7 +365,7 @@ def cdr_detail(request, cdr_id):
         'cdr_data': cdr.data,
         'menu': menu
     }
-    return render_to_response('cdr/cdr_detail.html',
+    return render('cdr/cdr_detail.html',
                               data, context_instance=RequestContext(request))
 
 
@@ -504,7 +504,7 @@ def cdr_dashboard(request):
         'country_chartcontainer': 'country_piechart_container',
         'country_extra': country_extra,
     }
-    return render_to_response('cdr/dashboard.html', variables, context_instance=RequestContext(request))
+    return render('cdr/dashboard.html', variables, context_instance=RequestContext(request))
 
 
 @permission_required('user_profile.mail_report', login_url='/')
@@ -549,7 +549,7 @@ def mail_report(request):
         'hangup_cause_data': mail_data['hangup_cause_data'],
         'msg': msg,
     }
-    return render_to_response('cdr/mail_report.html', data, context_instance=RequestContext(request))
+    return render('cdr/mail_report.html', data, context_instance=RequestContext(request))
 
 
 @permission_required('user_profile.daily_comparison', login_url='/')
@@ -646,7 +646,7 @@ def cdr_daily_comparison(request):
             'jquery_on_ready': True,
         },
     }
-    return render_to_response('cdr/daily_comparison.html', variables, context_instance=RequestContext(request))
+    return render('cdr/daily_comparison.html', variables, context_instance=RequestContext(request))
 
 
 @permission_required('user_profile.overview', login_url='/')
@@ -776,7 +776,7 @@ def cdr_overview(request):
         'metric_aggr': metric_aggr,
         'country_data': country_data,
     }
-    return render_to_response('cdr/overview.html', variables, context_instance=RequestContext(request))
+    return render('cdr/overview.html', variables, context_instance=RequestContext(request))
 
 
 @permission_required('user_profile.by_country', login_url='/')
@@ -908,7 +908,7 @@ def cdr_country_report(request):
         'country_extra': country_extra,
         'top_country': top_country,
     }
-    return render_to_response('cdr/country_report.html', data, context_instance=RequestContext(request))
+    return render('cdr/country_report.html', data, context_instance=RequestContext(request))
 
 
 def generate_crate(max_num):
@@ -996,5 +996,5 @@ def world_map_view(request):
         'action': action,
         'call_crates': call_crates,
     }
-    return render_to_response('cdr/world_map.html',
+    return render('cdr/world_map.html',
                               variables, context_instance=RequestContext(request))

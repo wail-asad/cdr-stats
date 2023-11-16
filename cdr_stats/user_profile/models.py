@@ -14,7 +14,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from voip_billing.models import VoIPPlan
 from django_lets_go.language_field import LanguageField
 from django_countries.fields import CountryField
@@ -35,7 +35,7 @@ class AccountCode(models.Model):
     Accountcode will be used during the import to determine to which users
     the imported CDRs need to attach.
     """
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User,on_delete=models.PROTECT)
     accountcode = models.CharField(max_length=50, blank=False,
                                    null=True, unique=True)
     description = models.CharField(max_length=200, blank=True,
@@ -82,8 +82,8 @@ class UserProfile(models.Model):
 
     **Name of DB table**: user_profile
     """
-    user = models.OneToOneField(User)
-    voipplan = models.ForeignKey(VoIPPlan, verbose_name=_('VoIP plan'),
+    user = models.OneToOneField(User,on_delete=models.PROTECT)
+    voipplan = models.ForeignKey(VoIPPlan,on_delete=models.PROTECT, verbose_name=_('VoIP plan'),
                                  blank=True, null=True,
                                  help_text=_("select VoIP Plan"))
     address = models.CharField(blank=True, null=True, max_length=200,
